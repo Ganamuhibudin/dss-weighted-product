@@ -3,6 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('plugins.Datatables', true)
+@section('plugins.Chartjs', true)
 
 @section('content')
 <div class="row">
@@ -162,6 +163,25 @@
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
+        <!-- BAR CHART -->
+        <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Chart Hasil Perhitungan</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="chart">
+                  <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
     </div>
 </div>
 @stop
@@ -173,7 +193,63 @@
 @section('js')
 <script>
     $(function () {
-        
+        var customers = <?php echo json_encode($customers); ?>;
+        var nilaiVectorV = <?php echo json_encode($nilaiVectorV); ?>;
+
+        var barLabels = [];
+        var barData = [];
+        var i = 0;
+        for (var key in customers) {
+            if (customers.hasOwnProperty(key)) {
+                barLabels.push(customers[key]['name']);
+                barData.push(nilaiVectorV[i]);
+            }
+            i++;
+        }
+
+        var areaChartData = {
+            labels  : barLabels,
+            datasets: [
+                {
+                    label               : 'Pelanggan',
+                    backgroundColor     : 'rgba(60,141,188,0.9)',
+                    borderColor         : 'rgba(60,141,188,0.8)',
+                    pointRadius         : false,
+                    pointColor          : '#3b8bba',
+                    pointStrokeColor    : 'rgba(60,141,188,1)',
+                    pointHighlightFill  : '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data                : barData
+                },
+            ]
+        }
+
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChartData = jQuery.extend(true, {}, areaChartData)
+        var temp0 = areaChartData.datasets[0]
+        barChartData.datasets[0] = temp0
+
+        var barChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    }
+                }]
+            }
+        }
+
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar', 
+            data: barChartData,
+            options: barChartOptions
+        })
     });
 </script>
 @stop

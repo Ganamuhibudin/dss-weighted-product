@@ -104,9 +104,7 @@ class CalculationController extends Controller
 
         $rank = $nilaiVectorV;
         rsort($rank);
-        // print_r(array_keys($newArr));
-        // dd($newArr, $nilaiVectorV);
-        // dd($nilaiVectorV, $rank);
+
         return view('customers/calculation')
             ->with('customers', $customers)
             ->with('criterias', $criterias)
