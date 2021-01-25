@@ -116,7 +116,26 @@ class CustomerValueController extends Controller
         if (count($getCustomerValues) > 0) {
             return response()->json(['message' => 'Data penilaian pelanggan sudah tersimpan'], 400);
         }
-        dd($getCustomerValues);
+
+        // get criteria
+        $getCriterias = Criteria::select('id', 'code', 'name')
+            ->get()
+            ->toArray();
+
+        $criterias = [];
+        foreach ($getCriterias as $value) {
+            $criterias[$value['id']] = $value;
+        }
+        
+        foreach ($criterias as $key => $value) {
+            $customerValue = new CustomerValues;
+
+            $customerValue->customer_id = $customerID;
+            $customerValue->criteria_id = $key;
+            $customerValue->value       = $request->values[$key];
+            $customerValue->save();
+        }
+        return response()->json($customerID, 201);
     }
 
     /**

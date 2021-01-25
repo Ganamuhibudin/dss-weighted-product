@@ -26,3 +26,8 @@ Route::resource('customers', CustomerController::class);
 Route::resource('criteria', CriteriaController::class);
 Route::resource('customer-value', CustomerValueController::class);
 Route::resource('calculation', CalculationController::class);
+
+// reports
+Route::get('/report', [App\Http\Controllers\CalculationController::class, 'reports'])->name('reports');
+Route::get('/report-all', [App\Http\Controllers\CalculationController::class, 'printAllCustomerReport'])->name('report-all');
+Route::get('/report-rank', [App\Http\Controllers\CalculationController::class, 'printRankCustomerReport'])->name('report-rank');
