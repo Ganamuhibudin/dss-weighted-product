@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Criteria;
+use App\Models\SubCriteria;
 use Auth;
 
 class CriteriaController extends Controller
@@ -38,7 +39,7 @@ class CriteriaController extends Controller
                     'name' => $value['name'],
                     'atribut' => ucfirst($value['atribut']),
                     'weight' => $value['weight'],
-                    'action' => '<a href="/criteria/'.$value['id'].'" class="btn btn-block btn-warning btn-sm" style="color: white;"><i class="fas fa-edit"></i></a><button url="/criteria/'.$value['id'].'" class="btn btn-block btn-danger btn-sm btn-delete" style="color: white;"><i class="fas fa-trash"></i></button>',
+                    'action' => '<a href="/criteria/'.$value['id'].'" class="btn btn-warning btn-sm" style="color: white;"><i class="fas fa-edit"></i> Ubah</a>&nbsp;<button url="/criteria/'.$value['id'].'" class="btn btn-danger btn-sm btn-delete" style="color: white;"><i class="fas fa-trash"></i> Hapus</button>&nbsp;<a href="/criteria/list-sub/'.$value['id'].'" class="btn btn-info btn-sm" style="color: white;"><i class="fas fa-edit"></i> Subkriteria</a>',
                 ];
             }
 
@@ -66,15 +67,15 @@ class CriteriaController extends Controller
      */
     public function store(Request $request)
     {
-        $customer = new Criteria;
+        $criteria = new Criteria;
 
-        $customer->code     = $request->code;
-        $customer->name     = $request->name;
-        $customer->atribut  = $request->atribut;
-        $customer->weight    = $request->weight;
-        $customer->save();
+        $criteria->code     = $request->code;
+        $criteria->name     = $request->name;
+        $criteria->atribut  = $request->atribut;
+        $criteria->weight   = $request->weight;
+        $criteria->save();
 
-        return response()->json($customer, 201);
+        return response()->json($criteria, 201);
     }
 
     /**
@@ -137,5 +138,85 @@ class CriteriaController extends Controller
         $criteria->delete();
 
         return response()->json($criteria, 200);
+    }
+
+    // Function to show list of sub criteria
+    public function listSub(Request $request, $criteriaID)
+    {
+        $criteria = Criteria::find($criteriaID);
+
+        // redirect if criteria doesn't exist
+        if ($criteria === null) {
+            return redirect('/criteria');
+        }
+
+        if ($request->ajax()) {
+            $getSubCriterias = SubCriteria::select('criteria_id', 'value', 'name', 'id')
+                ->where('criteria_id', $criteriaID)
+                ->get()
+                ->toArray();
+
+            $subs = [];
+            $idx = 1;
+            foreach ($getSubCriterias as $row) {
+                $subs[] = [
+                    'id'            => $row['id'],
+                    'no'            => $idx,
+                    'name'          => $row['name'],
+                    'criteria_id'   => $row['criteria_id'],
+                    'value'         => $row['value'],
+                    'action'        => '<button url="/criteria/sub/'.$row['id'].'" class="btn btn-warning btn-sm btn-edit" style="color: white;width: fit-content;"><i class="fas fa-edit"></i> Ubah</button>&nbsp;<button url="/criteria/sub/delete/'.$row['id'].'" class="btn btn-danger btn-sm btn-delete" style="color: white;width: fit-content;"><i class="fas fa-trash"></i> Hapus</button>',
+                ];
+                $idx++;
+            }
+
+            return response()->json($subs);
+        }
+        
+        return view('criterias/list-subs')->with('criteria', $criteria->toArray());
+    }
+
+    // Function to handle create sub criteria
+    public function addSub(Request $request)
+    {
+        $subCriteria = new SubCriteria;
+
+        $subCriteria->criteria_id   = $request->criteria_id;
+        $subCriteria->name          = $request->name;
+        $subCriteria->value         = $request->value;
+        $subCriteria->save();
+
+        return response()->json($subCriteria, 201);
+    }
+
+    // Function to handle get sub criteria
+    public function getSub($id)
+    {
+        $subCriteria = SubCriteria::find($id);
+
+        return response()->json($subCriteria->toArray(), 200);
+    }
+
+    // Function to handle update sub criteria
+    public function updateSub(Request $request, $id)
+    {
+        $subCriteria = SubCriteria::find($id);
+
+        $subCriteria->name  = $request->name;
+        $subCriteria->value = $request->value;
+        if (!$subCriteria->save()) {
+            return response()->json($subCriteria, 500);
+        }
+
+        return response()->json($subCriteria, 200);
+    }
+
+    // Function to handle delete sub criteria
+    public function deleteSub($id)
+    {
+        $subCriteria = SubCriteria::find($id);
+        $subCriteria->delete();
+
+        return response()->json($subCriteria, 200);
     }
 }

@@ -20,10 +20,10 @@
                 <table id="tblCriterias" class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>Kode</th>
-                        <th>Nama Kriteria</th>
-                        <th>Atribut</th>
-                        <th>Bobot</th>
+                        <th width="10%">Kode</th>
+                        <th width="30%">Nama Kriteria</th>
+                        <th width="15%">Atribut</th>
+                        <th width="20%">Bobot</th>
                         <th>Aksi</th>
                         </tr>
                     </thead>

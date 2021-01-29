@@ -27,6 +27,13 @@ Route::resource('criteria', CriteriaController::class);
 Route::resource('customer-value', CustomerValueController::class);
 Route::resource('calculation', CalculationController::class);
 
+// sub criteria
+Route::get('/criteria/list-sub/{criteriaID}', [App\Http\Controllers\CriteriaController::class, 'listSub'])->name('list-sub');
+Route::post('/criteria/sub-add', [App\Http\Controllers\CriteriaController::class, 'addSub'])->name('sub-add');
+Route::get('/criteria/sub/{id}', [App\Http\Controllers\CriteriaController::class, 'getSub'])->name('sub-get');
+Route::put('/criteria/sub/{id}', [App\Http\Controllers\CriteriaController::class, 'updateSub'])->name('sub-update');
+Route::delete('/criteria/sub/delete/{id}', [App\Http\Controllers\CriteriaController::class, 'deleteSub'])->name('sub-delete');
+
 // reports
 Route::get('/report', [App\Http\Controllers\CalculationController::class, 'reports'])->name('reports');
 Route::get('/report-all', [App\Http\Controllers\CalculationController::class, 'printAllCustomerReport'])->name('report-all');
