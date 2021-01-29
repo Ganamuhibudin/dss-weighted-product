@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Criteria;
+use App\Models\SubCriteria;
 use App\Models\Customers;
 use App\Models\CustomerValues;
 use Auth;
@@ -91,10 +92,20 @@ class CustomerValueController extends Controller
         foreach ($getCriterias as $value) {
             $criterias[$value['id']] = $value;
         }
-        // dd($criterias);
+        
+        // get sub criteria
+        $getSubCriterias = SubCriteria::select('id', 'criteria_id', 'name', 'value')
+            ->get()
+            ->toArray();
+        
+        $subCriterias = [];
+        foreach ($getSubCriterias as $value) {
+            $subCriterias[$value['criteria_id']][] = $value;
+        }
 
         return view('customers/appraisal')
             ->with('customers', $customers)
+            ->with('subCriterias', $subCriterias)
             ->with('criterias', $criterias);
     }
 
@@ -179,10 +190,20 @@ class CustomerValueController extends Controller
                 'value' => $value['value'],
             ];
         }
-        // dd($criterias, $customerValues);
+        
+        // get sub criteria
+        $getSubCriterias = SubCriteria::select('id', 'criteria_id', 'name', 'value')
+            ->get()
+            ->toArray();
+        
+        $subCriterias = [];
+        foreach ($getSubCriterias as $value) {
+            $subCriterias[$value['criteria_id']][] = $value;
+        }
 
         return view('customers/appraisal')
             ->with('criterias', $criterias)
+            ->with('subCriterias', $subCriterias)
             ->with('customerValues', $customerValues);
     }
 

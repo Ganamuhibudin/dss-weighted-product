@@ -36,9 +36,23 @@
                         <label for="{{ $criteria['code'] }}" class="col-sm-2 col-form-label">{{ $criteria['code'] }}</label>
                         <div class="col-sm-10">
                         @if (isset($customerValues))
-                            <input type="number" name="values[{{ $criteria['id'] }}]" class="form-control" id="{{ $criteria['code'] }}" placeholder="0" value="{{ $customerValues['values'][$criteria['id']]['value'] }}">
+                            <select class="form-control" name="values[{{ $criteria['id'] }}]">
+                                <option value="">Pilih Nilai Bobot</option>
+                            @foreach ($subCriterias[$criteria['id']] as $subCriteria)
+                                @if ($customerValues['values'][$criteria['id']]['value'] == $subCriteria['value'])
+                                    <option value="{{ $subCriteria['value'] }}" selected="">{{ $subCriteria['name'] }}</option>
+                                @else
+                                    <option value="{{ $subCriteria['value'] }}">{{ $subCriteria['name'] }}</option>
+                                @endif
+                            @endforeach
+                            </select>
                         @else
-                            <input type="number" name="values[{{ $criteria['id'] }}]" class="form-control" id="{{ $criteria['code'] }}" placeholder="0">
+                            <select class="form-control" name="values[{{ $criteria['id'] }}]">
+                                <option value="">Pilih Nilai Bobot</option>
+                            @foreach ($subCriterias[$criteria['id']] as $subCriteria)
+                                <option value="{{ $subCriteria['value'] }}">{{ $subCriteria['name'] }}</option>
+                            @endforeach
+                            </select>
                         @endif
                         </div>
                     </div>
