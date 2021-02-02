@@ -15,9 +15,9 @@
     <body>
 
         <center>
-            <h3>Laporan Penentuan Peringkat Pelanggan Terbaik</h3>
-            <h3>PT.EDI Indonesia Periode 2020</h3>
-            <h3>Dengan Menggunakan Metode Wighted Product(WP)</h3>
+            <img src="{{ public_path() }}/{{ config('adminlte.logo_img') }}" height="50">
+            <h3>LAPORAN KESELURUHAN NILAI PELANGGAN</h3>
+            <h3>PT EDI INDONESIA</h3>
         </center>
         <table class="table table-bordered" width="100%">
             <thead>
